@@ -61,7 +61,7 @@ Logical inconsistencies were also detected, including negative stock_on_hand val
 
 Addressing these data quality issues is essential to ensure the reliability of downstream analytics and highlights the importance of data validation within a big data processing pipeline.
 
-Initial data exploration identified several real-world data quality issues, including missing values in sales, inventory, and delivery fields, duplicate records across transactional and snapshot datasets, negative or inconsistent inventory values, and zero-quantity sales records. These issues highlight the need for robust preprocessing before analytics. No orphan records were identified, and temporal relationships in logistics and supplier delivery data were found to be logically consistent.
+Addressing these data quality issues is critical to ensure analytical validity, as unresolved inconsistencies could distort inventory risk assessment, supplier performance evaluation, and demand trend analysis. The findings from this exploratory assessment directly inform the data cleaning and validation strategies described in subsequent sections.
 
 ### 3.4 Dataset Integration
 
@@ -87,13 +87,15 @@ Planned preprocessing steps include handling missing values through filtering or
 
 Key transformations include joins across datasets, aggregations at product, location, and time levels, and derived metrics such as stockout risk indicators, delivery delays, and supplier reliability scores. These transformations directly support the selected research questions.
 
+Feature engineering choices are driven by the need to translate raw operational data into analytically meaningful indicators aligned with business objectives. Derived features such as stockout risk flags, delivery delay metrics, and supplier reliability indicators enable direct assessment of operational performance against defined thresholds and expectations. These features reduce analytical complexity while supporting clearer interpretation of results by business stakeholders.
+
 ---
 
 ## 5. Data Analytics Plan
 
 ### 5.1 Sales Demand Analysis
 
-This research question primarily involves **descriptive analytics**, with elements of exploratory analysis to uncover temporal and regional patterns. Techniques include time-series aggregation, trend analysis, and regional comparisons. Spark SQL functions such as GROUP BY, window functions, and date-based aggregations are used. Python libraries such as Pandas and Matplotlib may support further analysis and visualisation.
+This research question primarily involves **descriptive analytics**, with elements of exploratory analysis to uncover temporal and regional patterns. Sales data is analysed at daily and weekly aggregation levels to identify short-term demand fluctuations, seasonal patterns, and the impact of promotional activity, providing a temporal foundation for inventory and replenishment planning. Techniques include time-series aggregation, trend analysis, and regional comparisons. Spark SQL functions such as GROUP BY, window functions, and date-based aggregations are used. Python libraries such as Pandas and Matplotlib may support further analysis and visualisation.
 
 ### 5.2 Stockout Risk Identification
 
@@ -114,6 +116,8 @@ Logistics performance is analysed using **descriptive and diagnostic analytics**
 The primary objective of the dashboard is to translate complex analytical outputs into intuitive, actionable insights for senior management and operational teams. The dashboard is designed to provide both high-level oversight and the ability to drill down into specific products, locations, suppliers, or time periods.
 
 Key KPIs displayed on the dashboard include total and average sales volumes, stockout risk indicators, percentage of inventory below safety stock, average supplier delivery delays, logistics cost per shipment, and supplier defect rates. These KPIs enable rapid assessment of operational performance.
+
+Each KPI is explicitly aligned with the selected research questions. Sales trend and volume metrics address demand variability across products and regions, stockout risk indicators support identification of high-risk inventory locations, supplier delay and defect metrics evaluate supplier reliability, and logistics cost and duration KPIs highlight factors contributing to delivery inefficiencies.
 
 Visualisations are selected based on the nature of the data and the analytical questions being addressed. Line charts are used to represent sales demand trends over time, enabling the identification of seasonality and promotional effects. Heatmaps display stockout risk across locations and products, highlighting high-risk areas at a glance. Bar charts and ranking tables are used to compare supplier performance and logistics delays, while KPI tiles provide summary metrics for executive-level reporting.
 
@@ -149,8 +153,6 @@ From an ethical perspective, analytics-driven decisions should be explainable an
 
 ## 9. Conclusion
 
-This report presented a comprehensive Big Data Analytics Plan for FreshNest Retail, addressing key operational challenges through an integrated and scalable analytics approach. By leveraging Databricks and Apache Spark, the proposed solution supports efficient data ingestion, quality assessment, transformation, and analysis across multiple operational domains. The analytics plan enables improved visibility into sales demand, inventory risk, supplier reliability, and logistics performance, while the dashboard design ensures business-appropriate communication of insights.
+This report presented a comprehensive Big Data Analytics Plan for FreshNest Retail, addressing key operational challenges through an integrated and scalable analytics approach. By leveraging Databricks and Apache Spark, the proposed solution supports efficient data ingestion, quality assessment, transformation, and analysis across multiple operational domains. The analytics plan enables improved visibility into sales demand, inventory risk, supplier reliability, and logistics performance, while the dashboard design ensures business-appropriate communication of insights. The optional streaming extension further demonstrates how the solution can evolve toward real-time, proactive decision support, aligning with modern big data analytics best practices.
 
 The inclusion of an optional streaming analytics plan demonstrates how the proposed batch-based solution can be extended to support near-real-time monitoring and proactive decision-making. Overall, the report highlights the strategic value of big data analytics in modern retail operations and provides a robust foundation for the subsequent implementation phase in Assignment 4.
-
-This report presented a comprehensive Big Data Analytics Plan for FreshNest Retail, addressing key operational challenges through an integrated, scalable analytics approach. By leveraging Databricks and Apache Spark, the proposed solution supports efficient data ingestion, quality assessment, transformation, and analysis across multiple operational domains. The analytics plan enables improved visibility into sales demand, inventory risk, supplier reliability, and logistics performance, while the dashboard design ensures business-friendly communication of insights. The optional streaming extension further demonstrates how the solution can evolve toward real-time, proactive decision support, aligning with modern big data analytics best practices.
