@@ -1,0 +1,56 @@
+location_id,location_name,location_type,region,country
+L00001,FreshNest Letterkenny,Store,North,Ireland
+L00002,FreshNest Donegal Town,Store,North,Ireland
+L00003,FreshNest Sligo,Store,West,Ireland
+L00004,FreshNest Galway,Store,West,Ireland
+L00005,FreshNest Athlone,Store,West,ireland
+L00006,FreshNest Dublin 1,Store,,Ireland
+L00007,FreshNest Dublin 2,Store,East,Ireland
+L00008,FreshNest Tallaght,Store,East,Ireland
+L00009,FreshNest Blanchardstown,Store,East,Ireland
+L00010,FreshNest Swords,Store,East,Ireland
+L00011,FreshNest Drogheda,Store,East,Ireland
+L00012,FreshNest Dundalk,Store,East,Ireland
+L00013,FreshNest Navan,Store,East,Ireland
+L00014,FreshNest Wicklow,Store,East,Ireland
+L00015,FreshNest Wexford,Store,South,Ireland
+L00016,FreshNest Waterford,Store,South,Ireland
+L00017,FreshNest Kilkenny,Store,South,Ireland
+L00018,FreshNest Carlow,Store,South,Ireland
+L00019,FreshNest Cork City,Store,South,Ireland
+L00020,FreshNest Cork Douglas,Store,South,Ireland
+L00021,FreshNest Mallow,Store,South,Ireland
+L00022,FreshNest Killarney,Store,South,Ireland
+L00023,FreshNest Tralee,Store,South,Ireland
+L00024,FreshNest Limerick City,Store,South,Ireland
+L00025,FreshNest Ennis,Store,West,Ireland
+L00026,FreshNest Tuam,Store,West,Ireland
+L00027,FreshNest Ballina,Store,West,Ireland
+L00028,FreshNest Castlebar,Store,West,Ireland
+L00029,FreshNest Roscommon,Store,West,Ireland
+L00030,FreshNest Longford,Store,West,Ireland
+L00031,FreshNest Tullamore,Store,West,Ireland
+L00032,FreshNest Portlaoise,Store,,Ireland
+L00033,FreshNest Naas,Store,East,Ireland
+L00034,FreshNest Newbridge,Store,East,Ireland
+L00035,FreshNest Kildare,Store,East,Ireland
+L00036,FreshNest Maynooth,Store,East,Ireland
+L00037,FreshNest Bray,Store,East,Ireland
+L00038,FreshNest Greystones,Store,East,Ireland
+L00039,FreshNest Clonmel,Store,South,Ireland
+L00040,FreshNest Thurles,Store,South,Ireland
+L00041,FreshNest Nenagh,Store,South,Ireland
+L00042,FreshNest Shannon,Store,West,Ireland
+L00043,FreshNest Carrick-on-Shannon,Store,West,Ireland
+L00044,FreshNest Mullingar,Store,West,Ireland
+L00045,FreshNest Cavan,Store,North,ireland
+L00046,FreshNest Monaghan,Store,North,Ireland
+L00047,FreshNest Derry,Store,North,Ireland
+L00048,FreshNest Belfast,Store,North,UK
+L00049,FreshNest Lisburn,Store,North,UK
+L00050,FreshNest Newry,Store,North,UK
+W0001,FreshNest DC Dublin,Warehouse,East,Ireland
+W0002,FreshNest DC Cork,Warehouse,South,Ireland
+W0003,FreshNest DC Galway,Warehouse,West,Ireland
+W0004,FreshNest DC Letterkenny,Warehouse,North,Ireland
+W0005,FreshNest DC Belfast,Warehouse,North,UK
