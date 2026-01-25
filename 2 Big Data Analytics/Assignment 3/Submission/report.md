@@ -2,9 +2,9 @@
 
 ## 1. Introduction
 
-Modern retail organisations operate in data-intensive environments where large volumes of information are generated across sales, inventory, logistics, and supplier operations. Effectively integrating and analysing this data is critical for maintaining optimal stock levels, ensuring supply chain reliability, reducing operational costs, and supporting informed decision-making. FreshNest Retail, a medium-sized retail company operating across multiple regions, has recently experienced frequent stockouts of high-demand products, excess inventory of slow-moving items, unreliable supplier deliveries, and rising logistics costs. Management believes these challenges stem from fragmented data storage and a lack of analytics-driven decision support.
+Modern retail organisations increasingly operate in data-intensive environments where large volumes of information are continuously generated across sales, inventory, logistics, and supplier operations. Effectively integrating and analysing this data is critical for maintaining optimal stock levels, ensuring supply chain reliability, reducing operational costs, and supporting informed decision-making. FreshNest Retail, a medium-sized retail company operating across multiple regions, has recently experienced frequent stockouts of high-demand products, excess inventory of slow-moving items, unreliable supplier deliveries, and rising logistics costs. Management believes these challenges stem from fragmented data storage and a lack of analytics-driven decision support.
 
-This report presents a Big Data Analytics Plan for FreshNest Retail using a distributed analytics approach. The plan focuses on the design of a scalable analytics solution using Apache Spark within the Databricks environment. Multiple operational datasets are analysed conceptually to address key business questions related to demand patterns, inventory risk, logistics performance, and supplier reliability. The report outlines data understanding, ingestion and processing strategies, analytical techniques, and a dashboard design to support management decision-making. An optional extension proposes how the batch analytics solution could be enhanced through real-time streaming analytics.
+This report presents a Big Data Analytics Plan for FreshNest Retail, adopting a distributed analytics approach aligned with modern enterprise data architectures. The plan focuses on the design of a scalable analytics solution using Apache Spark within the Databricks environment. Multiple operational datasets are analysed conceptually to address key business questions related to demand patterns, inventory risk, logistics performance, and supplier reliability. The report outlines data understanding, ingestion and processing strategies, analytical techniques, and a dashboard design to support management decision-making. An optional extension proposes how the batch analytics solution could be enhanced through real-time streaming analytics.
 
 ---
 
@@ -16,7 +16,7 @@ FreshNest Retail collects large volumes of operational data from sales systems, 
 
 ### 2.2 Selected Research Questions
 
-The following four research questions were selected based on their direct relevance to FreshNest Retail’s operational challenges:
+The following four research questions were selected based on their direct relevance to FreshNest Retail’s operational challenges and strategic objectives:
 
 1. **How do sales demand patterns vary across time, products, and regions?**
    Understanding demand variability is essential for accurate forecasting, inventory planning, and promotion evaluation.
@@ -55,7 +55,7 @@ Key variables include dates and timestamps (transaction dates, shipment dates), 
 
 ### 3.3 Data Quality Considerations
 
-Exploratory analysis revealed several data quality issues that are typical of operational datasets in large organisations. Missing values were identified in key numerical and date fields such as stock_on_hand, quantity_sold, unit_price, arrival_date, and actual_delivery_date. Duplicate records were observed when grouping inventory data by product, location, and snapshot date, as well as duplicate identifiers in sales transactions and logistics shipments.
+Initial exploratory analysis revealed several data quality issues that are typical of large-scale operational datasets within enterprise environments. Missing values were identified in key numerical and date fields such as stock_on_hand, quantity_sold, unit_price, arrival_date, and actual_delivery_date. Duplicate records were observed when grouping inventory data by product, location, and snapshot date, as well as duplicate identifiers in sales transactions and logistics shipments.
 
 Logical inconsistencies were also detected, including negative stock_on_hand values, cases where safety_stock exceeded reorder_point thresholds, and inventory levels falling below defined safety stock. Zero-quantity sales records were present, indicating either data entry errors or cancelled transactions that were not filtered upstream. Despite these issues, no orphan records were found across datasets, and logistics timing relationships and supplier delivery logic were internally consistent.
 
@@ -73,7 +73,7 @@ Datasets are linked using shared keys such as product_id, location_id, store_id,
 
 ### 4.1 Storage Strategy
 
-All datasets are stored as structured tables within a Databricks environment using a distributed file system. This approach supports scalability, fault tolerance, and efficient querying.
+All datasets are stored as structured tables within the Databricks environment using a distributed storage layer designed to support scalability, reliability, and efficient query execution. This approach supports scalability, fault tolerance, and efficient querying.
 
 ### 4.2 Data Loading
 
@@ -93,7 +93,7 @@ Key transformations include joins across datasets, aggregations at product, loca
 
 ### 5.1 Sales Demand Analysis
 
-This research question primarily involves **descriptive analytics**. Techniques include time-series aggregation, trend analysis, and regional comparisons. Spark SQL functions such as GROUP BY, window functions, and date-based aggregations are used. Python libraries such as Pandas and Matplotlib may support further analysis and visualisation.
+This research question primarily involves **descriptive analytics**, with elements of exploratory analysis to uncover temporal and regional patterns. Techniques include time-series aggregation, trend analysis, and regional comparisons. Spark SQL functions such as GROUP BY, window functions, and date-based aggregations are used. Python libraries such as Pandas and Matplotlib may support further analysis and visualisation.
 
 ### 5.2 Stockout Risk Identification
 
@@ -119,13 +119,13 @@ Visualisations are selected based on the nature of the data and the analytical q
 
 By consolidating these visual elements into a single dashboard, management can monitor operational health, identify emerging risks, and support data-driven decision-making.
 
-The dashboard is designed to provide management with a high-level operational overview. Key KPIs include sales volume trends, stockout risk indicators, average delivery delays, and supplier reliability scores. Visualisations include line charts for demand trends, heatmaps for stockout risk across locations, bar charts for supplier performance, and summary KPI tiles. These visualisations support rapid interpretation and informed decision-making.
+The dashboard is designed to provide senior management and operational stakeholders with a high-level yet actionable overview of business performance. Key KPIs include sales volume trends, stockout risk indicators, average delivery delays, and supplier reliability scores. Visualisations include line charts for demand trends, heatmaps for stockout risk across locations, bar charts for supplier performance, and summary KPI tiles. These visualisations support rapid interpretation and informed decision-making.
 
 ---
 
 ## 7. Optional: Streaming Data Analytics Plan
 
-While the current analytics solution is designed around batch processing of historical data, FreshNest Retail could further enhance its decision-making capabilities by adopting a streaming data analytics approach. Streaming analytics is particularly relevant in retail environments where operational conditions can change rapidly due to demand fluctuations, supply disruptions, or logistics delays.
+While the current analytics solution is designed around batch processing of historical data, FreshNest Retail could further enhance its decision-making capabilities by adopting a real-time streaming analytics approach. Streaming analytics is particularly relevant in retail environments where operational conditions can change rapidly due to demand fluctuations, supply disruptions, or logistics delays.
 
 In a proposed streaming architecture, real-time sales transactions from point-of-sale systems, live inventory updates from warehouses, and shipment status events from logistics partners could be ingested through a message broker such as Apache Kafka or a cloud-based event hub. These event streams would be processed using Spark Structured Streaming within the Databricks environment, enabling continuous aggregation, window-based analytics, and stateful computations.
 
@@ -139,7 +139,7 @@ While the current solution is based on batch processing, FreshNest Retail could 
 
 ## 8. Ethical and Legal Considerations
 
-Although the datasets used in this assignment are synthetic and do not contain real personal or commercially sensitive data, ethical and legal considerations remain important when designing big data analytics solutions. In real-world retail environments, sales and logistics data may indirectly reveal customer behaviour, supplier performance, or employee activities, raising concerns around data privacy, fairness, and responsible use.
+Although the datasets used in this assignment are synthetic and do not contain real personal or commercially sensitive information, ethical and legal considerations remain central when designing big data analytics solutions. In real-world retail environments, sales and logistics data may indirectly reveal customer behaviour, supplier performance, or employee activities, raising concerns around data privacy, fairness, and responsible use.
 
 Organisations must ensure compliance with relevant data protection regulations, such as the General Data Protection Regulation (GDPR), particularly when handling customer-related or location-based data. This includes implementing appropriate access controls, data minimisation practices, and secure storage mechanisms. Transparency in analytics processes is also essential to ensure that automated insights or performance evaluations do not lead to unfair treatment of suppliers or operational staff.
 
@@ -151,6 +151,6 @@ From an ethical perspective, analytics-driven decisions should be explainable an
 
 This report presented a comprehensive Big Data Analytics Plan for FreshNest Retail, addressing key operational challenges through an integrated and scalable analytics approach. By leveraging Databricks and Apache Spark, the proposed solution supports efficient data ingestion, quality assessment, transformation, and analysis across multiple operational domains. The analytics plan enables improved visibility into sales demand, inventory risk, supplier reliability, and logistics performance, while the dashboard design ensures business-appropriate communication of insights.
 
-The inclusion of an optional streaming analytics plan demonstrates how the proposed batch-based solution can be extended to support near-real-time monitoring and proactive decision-making. Overall, the report highlights the value of big data analytics in modern retail operations and provides a strong foundation for the subsequent implementation phase in Assignment 4.
+The inclusion of an optional streaming analytics plan demonstrates how the proposed batch-based solution can be extended to support near-real-time monitoring and proactive decision-making. Overall, the report highlights the strategic value of big data analytics in modern retail operations and provides a robust foundation for the subsequent implementation phase in Assignment 4.
 
 This report presented a comprehensive Big Data Analytics Plan for FreshNest Retail, addressing key operational challenges through an integrated, scalable analytics approach. By leveraging Databricks and Apache Spark, the proposed solution supports efficient data ingestion, quality assessment, transformation, and analysis across multiple operational domains. The analytics plan enables improved visibility into sales demand, inventory risk, supplier reliability, and logistics performance, while the dashboard design ensures business-friendly communication of insights. The optional streaming extension further demonstrates how the solution can evolve toward real-time, proactive decision support, aligning with modern big data analytics best practices.
