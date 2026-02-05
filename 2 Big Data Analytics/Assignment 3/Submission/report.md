@@ -2,157 +2,170 @@
 
 ## 1. Introduction
 
-Modern retail organisations increasingly operate in data-intensive environments where large volumes of information are continuously generated across sales, inventory, logistics, and supplier operations. Effectively integrating and analysing this data is critical for maintaining optimal stock levels, ensuring supply chain reliability, reducing operational costs, and supporting informed decision-making. FreshNest Retail, a medium-sized retail company operating across multiple regions, has recently experienced frequent stockouts of high-demand products, excess inventory of slow-moving items, unreliable supplier deliveries, and rising logistics costs. Management believes these challenges stem from fragmented data storage and a lack of analytics-driven decision support.
+Modern retail businesses generate large amounts of data from sales, inventory, logistics, and supplier operations. When this data is properly integrated and analysed, it helps companies maintain optimal stock levels, improve supply chain reliability, reduce costs, and make better decisions. However, when systems are disconnected, organisations struggle to turn raw data into useful insights.
 
-This report presents a Big Data Analytics Plan for FreshNest Retail, adopting a distributed analytics approach aligned with modern enterprise data architectures. The plan focuses on the design of a scalable analytics solution using Apache Spark within the Databricks environment. Multiple operational datasets are analysed conceptually to address key business questions related to demand patterns, inventory risk, logistics performance, and supplier reliability. The report outlines data understanding, ingestion and processing strategies, analytical techniques, and a dashboard design to support management decision-making. An optional extension proposes how the batch analytics solution could be enhanced through real-time streaming analytics.
+FreshNest Retail, a medium-sized retailer operating across multiple regions, faces several operational challenges, including stockouts of popular products, excess inventory of slow-moving items, unreliable supplier deliveries, and rising logistics costs. These issues are linked not only to operations but also to limited use of integrated analytics. Data exists across different systems, but it is fragmented and contains quality issues such as missing values and inconsistencies.
+
+This report presents a Big Data Analytics Plan using Apache Spark in Databricks and a Bronze–Silver–Gold architecture. The plan focuses on building a scalable data pipeline that cleans, validates, and transforms raw data into business-ready metrics. Key areas of analysis include demand patterns, stockout risk, supplier reliability, and demand forecasting. While the main focus is batch analytics, the design also considers future extension to simulated streaming for more timely decision-making.
 
 ---
 
 ## 2. Understanding the Case and Selected Research Questions
-
 ### 2.1 Business Problem Summary
 
-FreshNest Retail collects large volumes of operational data from sales systems, inventory management, logistics providers, and supplier records. However, this data is stored across disconnected systems and files, limiting the organisation’s ability to perform integrated analysis. As a result, the company struggles to anticipate demand, identify inventory risks, evaluate supplier performance, and manage logistics delays proactively. Senior management has requested the design of a big data analytics solution to integrate these datasets, improve operational visibility, and support data-driven decision-making.
+FreshNest Retail collects large volumes of operational data from sales transactions, inventory systems, logistics deliveries, and supplier performance records. However, these datasets are stored in separate systems and are not analysed together. This makes it difficult for the company to gain a full view of operations. In addition, the data contains quality issues such as missing values and inconsistent records, which further limit reliable analysis.
+
+Because of this, FreshNest Retail struggles to anticipate product demand, identify stockout risks early, assess supplier reliability, and forecast high-risk periods. Many decisions are made reactively instead of proactively. Senior management has therefore requested a big data analytics solution that can integrate these datasets, clean and transform the data, and generate meaningful business metrics to improve operational visibility and support data-driven decisions.
 
 ### 2.2 Selected Research Questions
 
-The following four research questions were selected based on their direct relevance to FreshNest Retail’s operational challenges and strategic objectives:
+To address these challenges, four research questions were selected:
 
-1. **How do sales demand patterns vary across time, products, and regions?**
-   Understanding demand variability is essential for accurate forecasting, inventory planning, and promotion evaluation.
+1. How do sales demand patterns vary across time, products, and regions?
 
-2. **Which products and locations are at the highest risk of stockouts?**
-   Identifying stockout risk enables proactive replenishment and reduces lost sales opportunities.
+2. Which products and locations are at the highest risk of stockouts?
 
-3. **Which suppliers show consistent delivery delays or poor reliability?**
-   Evaluating supplier performance helps mitigate supply chain risks and supports contract and sourcing decisions.
+3. Which suppliers show consistent delivery delays or poor reliability?
 
-4. **What are the main factors contributing to logistics delays and increased delivery times?**
-   Analysing logistics performance supports cost control and delivery reliability across the network.
+4. Can historical data be used to forecast future demand and identify high-risk periods?
+
+Each question leads to specific analytical outputs and KPIs that will be produced through the data processing pipeline.
 
 ---
 
-## 3. Data Description and Understanding
+## **3. Data Description and Understanding**
 
-### 3.1 Overview of Available Data
+### **3.1 Overview of Available Data**
 
-The datasets provided for this assignment represent a simplified but realistic snapshot of a retail organisation’s operational data landscape. Each dataset captures a different functional aspect of FreshNest Retail’s operations, and together they enable integrated analysis across sales, inventory, logistics, and supplier performance. Understanding the scope, structure, and limitations of each dataset is a critical step in designing a robust analytics plan.
+The datasets provided represent a simplified but realistic view of a retail company’s operations. Each dataset covers a different functional area, including sales, inventory, logistics, suppliers, products, and locations. Together, they allow integrated analysis across the full supply chain. Understanding the structure and limitations of these datasets is important for designing an effective analytics pipeline.
 
-The data is structured, relational in nature, and suitable for distributed processing using Spark. However, as with many real-world datasets, it contains inconsistencies and quality issues that must be addressed before meaningful analytics can be performed.
+The data is structured and relational, making it suitable for distributed processing using Apache Spark. However, the datasets contain several inconsistencies and quality issues that must be addressed before reliable analysis can be performed.
 
-### 3.1 Datasets and Purpose
+### **3.2 Datasets and Purpose**
 
-* **Sales Transactions**: Records individual sales transactions, used to analyse demand patterns across products, stores, and time.
-* **Inventory Levels**: Snapshot-based inventory data used to assess stock availability, safety stock compliance, and stockout risk.
-* **Products**: Contains product attributes such as category, unit cost, and shelf life.
-* **Locations**: Stores and warehouses with regional and geographic attributes.
-* **Logistic Deliveries**: Shipment-level data used to analyse delivery durations and transport costs.
-* **Supplier Performance**: Supplier order and delivery records used to evaluate reliability and defect rates.
+* **Sales Transactions:** Records individual sales events across products, stores, and time, used to analyse demand patterns.
+* **Inventory Levels:** Snapshot data showing stock levels, reorder points, and safety stock, used to evaluate stock availability and stockout risk.
+* **Products:** Contains product attributes such as category and cost.
+* **Locations:** Provides geographic information for stores and warehouses.
+* **Logistics Deliveries:** Shipment-level data used to assess delivery times and transport performance.
+* **Supplier Performance:** Records supplier orders, deliveries, and defect rates, used to evaluate reliability.
 
-### 3.2 Key Variables and Data Types
+### **3.3 Key Variables and Data Types**
 
-Key variables include dates and timestamps (transaction dates, shipment dates), numerical measures (quantity sold, stock levels, delivery durations, costs), and categorical identifiers (product IDs, location IDs, supplier IDs, regions, categories). These data types support temporal analysis, aggregation, joins, and performance evaluation.
+The data includes timestamps (sales dates, shipment dates), numerical measures (quantity sold, stock levels, delivery durations), and categorical identifiers (product IDs, location IDs, supplier IDs). These variables support aggregation, joins, and time-based analysis.
 
-### 3.3 Data Quality Considerations
+### **3.4 Data Quality Considerations**
 
-Initial exploratory analysis revealed several data quality issues that are typical of large-scale operational datasets within enterprise environments. Missing values were identified in key numerical and date fields such as stock_on_hand, quantity_sold, unit_price, arrival_date, and actual_delivery_date. Duplicate records were observed when grouping inventory data by product, location, and snapshot date, as well as duplicate identifiers in sales transactions and logistics shipments.
+Exploratory analysis identified missing values in important fields such as stock levels, quantity sold, unit price, and delivery dates. Duplicate records were also found in several tables. Logical issues were observed, including negative stock levels, safety stock higher than reorder points, and zero-quantity sales. These issues can distort business insights if not handled properly. Therefore, the analytics pipeline includes data cleaning, deduplication, validation rules, and standardisation of date formats before analysis.
 
-Logical inconsistencies were also detected, including negative stock_on_hand values, cases where safety_stock exceeded reorder_point thresholds, and inventory levels falling below defined safety stock. Zero-quantity sales records were present, indicating either data entry errors or cancelled transactions that were not filtered upstream. Despite these issues, no orphan records were found across datasets, and logistics timing relationships and supplier delivery logic were internally consistent.
+### **3.5 Dataset Integration**
 
-Addressing these data quality issues is essential to ensure the reliability of downstream analytics and highlights the importance of data validation within a big data processing pipeline.
-
-Addressing these data quality issues is critical to ensure analytical validity, as unresolved inconsistencies could distort inventory risk assessment, supplier performance evaluation, and demand trend analysis. The findings from this exploratory assessment directly inform the data cleaning and validation strategies described in subsequent sections.
-
-### 3.4 Dataset Integration
-
-Datasets are linked using shared keys such as product_id, location_id, store_id, and supplier_id. This integration enables cross-functional analysis, such as linking sales demand to inventory levels and supplier delivery performance.
+Datasets are linked using shared keys such as product_id, location_id, store_id, and supplier_id. These relationships enable cross-functional analysis, such as connecting sales demand with inventory levels and supplier performance.
 
 ---
 
 ## 4. Data Ingestion and Processing Plan
-
 ### 4.1 Storage Strategy
 
-All datasets are stored as structured tables within the Databricks environment using a distributed storage layer designed to support scalability, reliability, and efficient query execution. This approach supports scalability, fault tolerance, and efficient querying.
+Using Spark enables distributed processing, allowing large retail datasets to be processed efficiently and making the architecture scalable as data volumes grow. 
+
+All datasets are stored as structured Delta tables in the Databricks environment using a distributed storage system. A Medallion architecture is used to organise the data into three layers: Bronze (raw data), Silver (cleaned and structured data), and Gold (business-ready analytics). This layered approach improves scalability, data reliability, and easier maintenance.
 
 ### 4.2 Data Loading
 
-Batch data ingestion is performed using Spark DataFrames and Spark SQL, allowing efficient loading of large datasets and schema enforcement.
+Raw datasets are first ingested into the Bronze layer using Spark DataFrames. Historical data (2019–2024) is processed in batch mode, while 2025 data is treated as daily micro-batches to simulate streaming. Each batch is tagged with ingestion timestamps to support time-based processing.
 
 ### 4.3 Data Cleaning and Preprocessing
 
-Planned preprocessing steps include handling missing values through filtering or imputation, removing or consolidating duplicate records, validating logical constraints (such as non-negative stock levels), and standardising date formats. These steps ensure data reliability for downstream analytics.
+Data cleaning is performed in the Silver layer. This includes removing duplicate records, handling missing values through filtering or imputation depending on the variable importance, validating logical constraints (e.g., non-negative stock levels), correcting inconsistent formats, and standardising date and timestamp fields. Table-specific validation rules are applied to ensure realistic operational data.
 
 ### 4.4 Transformations and Feature Engineering
 
-Key transformations include joins across datasets, aggregations at product, location, and time levels, and derived metrics such as stockout risk indicators, delivery delays, and supplier reliability scores. These transformations directly support the selected research questions.
-
-Feature engineering choices are driven by the need to translate raw operational data into analytically meaningful indicators aligned with business objectives. Derived features such as stockout risk flags, delivery delay metrics, and supplier reliability indicators enable direct assessment of operational performance against defined thresholds and expectations. These features reduce analytical complexity while supporting clearer interpretation of results by business stakeholders.
+After cleaning, datasets are joined and transformed to create analytical features. Examples include stockout risk flags, delivery delay metrics, supplier reliability indicators, and sales performance measures. Aggregations are performed at product, location, and daily levels to generate structured analytical tables. These transformations convert raw operational data into KPIs that directly support the research questions. The resulting aggregated KPI tables are stored in the Gold layer, where they are optimised for reporting, dashboard visualisation, and decision-making.
 
 ---
 
 ## 5. Data Analytics Plan
-
 ### 5.1 Sales Demand Analysis
 
-This research question primarily involves **descriptive analytics**, with elements of exploratory analysis to uncover temporal and regional patterns. Sales data is analysed at daily and weekly aggregation levels to identify short-term demand fluctuations, seasonal patterns, and the impact of promotional activity, providing a temporal foundation for inventory and replenishment planning. Techniques include time-series aggregation, trend analysis, and regional comparisons. Spark SQL functions such as GROUP BY, window functions, and date-based aggregations are used. Python libraries such as Pandas and Matplotlib may support further analysis and visualisation.
+This research question focuses on descriptive analytics to understand how sales demand changes across time, products, and regions. Cleaned sales data from the Silver layer is aggregated at daily and weekly levels. Spark SQL functions such as GROUP BY and window operations are used to identify demand trends, seasonal patterns, and differences across product categories and geographic regions. Promotional activity is also analysed to measure its effect on sales volume. These insights support better inventory and replenishment planning.
 
-### 5.2 Stockout Risk Identification
+## 5.2 Stockout Risk Identification
 
-A combination of **descriptive and diagnostic analytics** is applied to identify products and locations where stock_on_hand falls below safety_stock or reorder_point thresholds. Conditional logic, joins, and aggregations are used to compute risk indicators.
+This analysis identifies products and locations at risk of stockouts. Inventory data is combined with product and location information, and rule-based indicators are used to flag risk situations, such as stock levels falling below safety stock or reorder points. Aggregations help measure how frequently stockouts occur across locations. This provides early warning indicators for inventory management.
 
 ### 5.3 Supplier Reliability Analysis
 
-**Diagnostic analytics** is used to evaluate supplier performance through delivery delays, units received versus ordered, and defect rates. Correlation analysis and KPI comparisons support supplier assessment.
+Supplier performance is evaluated using delivery delays, fill rates, and defect rates derived from supplier and logistics data. Spark transformations calculate delay durations and reliability metrics, which are aggregated to create supplier performance KPIs. This helps identify suppliers with consistent delivery issues.
 
-### 5.4 Logistics Delay Analysis
+### 5.4 Forecasting Demand and High-Risk Periods
 
-Logistics performance is analysed using **descriptive and diagnostic analytics**, focusing on planned versus actual delivery durations and transport costs. Aggregations by route, supplier, and region help identify delay patterns.
+Historical sales trends are used to estimate future demand using time-based trend analysis. Rolling averages and trend patterns are calculated in Spark to forecast expected demand. These forecasts are compared with inventory levels to identify potential high-risk periods for stockouts. For 2025 data, forecasts are updated through daily micro-batches to simulate streaming-based analytics.
+
+Key outputs include forecasted demand, predicted stockout periods, and peak-demand alerts.
 
 ---
 
 ## 6. Data Visualisation and Dashboard Plan
 
-The primary objective of the dashboard is to translate complex analytical outputs into intuitive, actionable insights for senior management and operational teams. The dashboard is designed to provide both high-level oversight and the ability to drill down into specific products, locations, suppliers, or time periods.
+The dashboard is designed to convert analytical results into clear and actionable insights for managers and operational staff. It combines outputs from the Gold layer tables, where cleaned and aggregated data is stored in KPI-ready form. The dashboard provides both high-level summaries and the ability to explore details by product, region, supplier, or date.
 
-Key KPIs displayed on the dashboard include total and average sales volumes, stockout risk indicators, percentage of inventory below safety stock, average supplier delivery delays, logistics cost per shipment, and supplier defect rates. These KPIs enable rapid assessment of operational performance.
+Key KPIs displayed include:
 
-Each KPI is explicitly aligned with the selected research questions. Sales trend and volume metrics address demand variability across products and regions, stockout risk indicators support identification of high-risk inventory locations, supplier delay and defect metrics evaluate supplier reliability, and logistics cost and duration KPIs highlight factors contributing to delivery inefficiencies.
+- **Sales demand metrics:** Total units sold, average sales value, daily trends, and seasonal patterns across regions and product categories.
 
-Visualisations are selected based on the nature of the data and the analytical questions being addressed. Line charts are used to represent sales demand trends over time, enabling the identification of seasonality and promotional effects. Heatmaps display stockout risk across locations and products, highlighting high-risk areas at a glance. Bar charts and ranking tables are used to compare supplier performance and logistics delays, while KPI tiles provide summary metrics for executive-level reporting.
+- **Stockout risk indicators:** Percentage of products below safety stock, number of critical stock situations, and locations with frequent risk.
 
-By consolidating these visual elements into a single dashboard, management can monitor operational health, identify emerging risks, and support data-driven decision-making.
+- **Supplier performance metrics:** Average delivery delay, fill rate, and defect rate to evaluate supplier reliability.
 
-The dashboard is designed to provide senior management and operational stakeholders with a high-level yet actionable overview of business performance. Key KPIs include sales volume trends, stockout risk indicators, average delivery delays, and supplier reliability scores. Visualisations include line charts for demand trends, heatmaps for stockout risk across locations, bar charts for supplier performance, and summary KPI tiles. These visualisations support rapid interpretation and informed decision-making.
+- **Forecasting KPIs:** Predicted demand levels, expected high-risk periods for stockouts, and peak-demand alerts.
+
+Visualisations are chosen to match the type of analysis:
+
+- **Line charts** show sales trends and forecasted demand over time.
+
+- **Heatmaps** highlight regions or products with high stockout risk.
+
+- **Bar charts** and ranking tables compare supplier performance.
+
+- **KPI tiles** summarise important numbers for quick management review.
+
+For Q2 and Q6, dashboards can be updated using daily micro-batch data to simulate near-real-time monitoring.
+
+These visual insights support operational decisions such as stock redistribution, supplier review, and promotional planning.
 
 ---
 
-## 7. Optional: Streaming Data Analytics Plan
+## 7. Streaming Data Analytics Plan
 
-While the current analytics solution is designed around batch processing of historical data, FreshNest Retail could further enhance its decision-making capabilities by adopting a real-time streaming analytics approach. Streaming analytics is particularly relevant in retail environments where operational conditions can change rapidly due to demand fluctuations, supply disruptions, or logistics delays.
+Although the main solution is based on batch processing, this project also includes a simulated streaming component to demonstrate how analytics could become more timely. Instead of using live data sources, streaming is represented through daily micro-batches derived from the most recent portion of the dataset. This approach allows the system to mimic how new operational data would arrive in real business environments.
 
-In a proposed streaming architecture, real-time sales transactions from point-of-sale systems, live inventory updates from warehouses, and shipment status events from logistics partners could be ingested through a message broker such as Apache Kafka or a cloud-based event hub. These event streams would be processed using Spark Structured Streaming within the Databricks environment, enabling continuous aggregation, window-based analytics, and stateful computations.
+For this simulation, earlier historical data is treated as batch input, while recent daily data is processed incrementally. Each micro-batch updates key analytical tables in the Silver and Gold layers. This is particularly useful for:
 
-Key streaming use cases include real-time alerts when inventory levels fall below safety stock thresholds, early detection of supplier delivery delays based on deviations from planned delivery durations, and live monitoring of sales spikes during promotional campaigns. Processed streaming outputs could be written to Delta tables and integrated into existing dashboards to provide near-real-time operational visibility.
+Q2 (Stockout Risk): Daily updates allow identification of locations where stock levels become critical.
 
-By combining batch and streaming analytics, FreshNest Retail would transition from reactive reporting to proactive operational management, aligning with modern big data analytics best practices and supporting faster, data-driven responses to emerging risks.
+Q6 (Demand Forecasting): Forecast calculations are refreshed as new sales data arrives, improving prediction accuracy for upcoming periods.
 
-While the current solution is based on batch processing, FreshNest Retail could enhance its analytics capabilities through real-time streaming analytics. Live sales transactions, inventory updates, and shipment status events could be ingested via a message broker and processed using Spark Structured Streaming in Databricks. Streaming analytics would enable real-time low-stock alerts, early detection of supplier delays, and immediate monitoring of promotional impacts. Integrating streaming with batch analytics would allow FreshNest Retail to move from reactive reporting to proactive operational management.
+Although this is not real-time streaming with technologies such as Kafka, the micro-batch approach demonstrates how Spark-based systems can transition from batch analytics to near-real-time monitoring. This design shows how FreshNest Retail could move toward more proactive, data-driven decision-making in the future.
 
 ---
 
 ## 8. Ethical and Legal Considerations
 
-Although the datasets used in this assignment are synthetic and do not contain real personal or commercially sensitive information, ethical and legal considerations remain central when designing big data analytics solutions. In real-world retail environments, sales and logistics data may indirectly reveal customer behaviour, supplier performance, or employee activities, raising concerns around data privacy, fairness, and responsible use.
+Although the datasets used in this assignment are synthetic and do not include real personal or commercial data, ethical and legal issues are still important when designing big data analytics systems. In real retail environments, sales, location, and supplier data can indirectly reveal sensitive information about customer behaviour, business performance, or operational staff. This creates risks related to data privacy, fairness, and responsible decision-making.
 
-Organisations must ensure compliance with relevant data protection regulations, such as the General Data Protection Regulation (GDPR), particularly when handling customer-related or location-based data. This includes implementing appropriate access controls, data minimisation practices, and secure storage mechanisms. Transparency in analytics processes is also essential to ensure that automated insights or performance evaluations do not lead to unfair treatment of suppliers or operational staff.
+Retail organisations must comply with data protection regulations such as the General Data Protection Regulation (GDPR). Key practices include restricting access to sensitive data, storing information securely, and collecting only data that is necessary for analysis. The layered data architecture used in this project (Bronze, Silver, Gold) supports this by separating raw data from business-ready outputs and reducing unnecessary data exposure.
 
-From an ethical perspective, analytics-driven decisions should be explainable and proportionate. For example, supplier performance assessments should consider data quality limitations and contextual factors rather than relying solely on automated metrics. Embedding ethical and legal considerations into the analytics design phase supports responsible data use and long-term organisational trust.
+Ethical concerns also arise when analytics results influence decisions. For example, supplier performance scores or demand forecasts should not be treated as perfect truths. Data quality issues, missing values, and modelling assumptions can affect results. Therefore, insights should be interpreted carefully and supported by human judgement to avoid unfair or biased decisions. Embedding these considerations into system design promotes responsible and trustworthy analytics.
 
 ---
 
 ## 9. Conclusion
 
-This report presented a comprehensive Big Data Analytics Plan for FreshNest Retail, addressing key operational challenges through an integrated and scalable analytics approach. By leveraging Databricks and Apache Spark, the proposed solution supports efficient data ingestion, quality assessment, transformation, and analysis across multiple operational domains. The analytics plan enables improved visibility into sales demand, inventory risk, supplier reliability, and logistics performance, while the dashboard design ensures business-appropriate communication of insights. The optional streaming extension further demonstrates how the solution can evolve toward real-time, proactive decision support, aligning with modern big data analytics best practices.
+This report presented a Big Data Analytics Plan for FreshNest Retail aimed at addressing key operational challenges through an integrated and scalable data architecture. Using Apache Spark within the Databricks environment, the proposed solution enables structured data ingestion, cleaning, transformation, and analysis across sales, inventory, supplier, and logistics datasets. The analytics framework supports better visibility into demand trends, stockout risks, supplier reliability, and future demand patterns, helping management make more informed and proactive decisions.
 
-The inclusion of an optional streaming analytics plan demonstrates how the proposed batch-based solution can be extended to support near-real-time monitoring and proactive decision-making. Overall, the report highlights the strategic value of big data analytics in modern retail operations and provides a robust foundation for the subsequent implementation phase in Assignment 4.
+The Medallion architecture combined with micro-batch processing illustrates how batch and near-real-time analytics can be integrated within a scalable big data framework.
+
+The dashboard design ensures that analytical results are communicated clearly to business users through meaningful KPIs and visualisations. In addition, the project introduces a simulated streaming approach using daily micro-batches, demonstrating how the system could move toward more timely updates for stockout monitoring and demand forecasting.
+
+This plan shows how big data technologies can be applied in a retail context to improve operational efficiency and decision-making. It also provides a strong foundation for the technical implementation phase in the next stage of the assignment.
