@@ -69,7 +69,7 @@ Datasets are linked using shared keys such as product_id, location_id, store_id,
 
 Using Spark enables distributed processing, allowing large retail datasets to be processed efficiently and making the architecture scalable as data volumes grow. 
 
-All datasets are stored as structured Delta tables in the Databricks environment using a distributed storage system. A Medallion architecture is used to organise the data into three layers: Bronze (raw data), Silver (cleaned and structured data), and Gold (business-ready analytics). This layered approach improves scalability, data reliability, and easier maintenance.
+All datasets are stored as structured Delta tables in the Databricks environment using a distributed storage system. A Medallion architecture is used to organise the data into three layers: Bronze (raw data), Silver (cleaned and structured data), and Gold (business-ready analytics). This layered approach improves scalability, data reliability, and simplified maintenance.
 
 ### 4.2 Data Loading
 
@@ -101,6 +101,8 @@ Supplier performance is evaluated using delivery delays, fill rates, and defect 
 ### 5.4 Forecasting Demand and High-Risk Periods
 
 Historical sales trends are used to estimate future demand using time-based trend analysis. Rolling averages and trend patterns are calculated in Spark to forecast expected demand. These forecasts are compared with inventory levels to identify potential high-risk periods for stockouts. For 2025 data, forecasts are updated through daily micro-batches to simulate streaming-based analytics.
+
+Simple time-series techniques such as rolling mean smoothing and trend-based extrapolation are used rather than complex machine learning models, as the objective is operational planning and interpretability rather than advanced predictive modelling.
 
 Key outputs include forecasted demand, predicted stockout periods, and peak-demand alerts.
 
@@ -136,7 +138,7 @@ These visual insights support operational decisions such as stock redistribution
 
 ---
 
-## 7. Streaming Data Analytics Plan
+## 7. Simulated Streaming Data Analytics Plan
 
 Although the main solution is based on batch processing, this project also includes a simulated streaming component to demonstrate how analytics could become more timely. Instead of using live data sources, streaming is represented through daily micro-batches derived from the most recent portion of the dataset. This approach allows the system to mimic how new operational data would arrive in real business environments.
 
@@ -154,7 +156,7 @@ Although this is not real-time streaming with technologies such as Kafka, the mi
 
 Although the datasets used in this assignment are synthetic and do not include real personal or commercial data, ethical and legal issues are still important when designing big data analytics systems. In real retail environments, sales, location, and supplier data can indirectly reveal sensitive information about customer behaviour, business performance, or operational staff. This creates risks related to data privacy, fairness, and responsible decision-making.
 
-Retail organisations must comply with data protection regulations such as the General Data Protection Regulation (GDPR). Key practices include restricting access to sensitive data, storing information securely, and collecting only data that is necessary for analysis. The layered data architecture used in this project (Bronze, Silver, Gold) supports this by separating raw data from business-ready outputs and reducing unnecessary data exposure.
+Retail organisations must comply with data protection regulations such as the General Data Protection Regulation (GDPR). Key practices include restricting access to sensitive data, storing information securely, and collecting only data that is necessary for analysis. The layered data architecture used in this project (Bronze, Silver, Gold) supports this by separating raw data from business-ready outputs and reducing unnecessary data exposure. Data governance policies, including role-based access control and data lineage tracking, are also essential to ensure accountability in large-scale analytics systems.
 
 Ethical concerns also arise when analytics results influence decisions. For example, supplier performance scores or demand forecasts should not be treated as perfect truths. Data quality issues, missing values, and modelling assumptions can affect results. Therefore, insights should be interpreted carefully and supported by human judgement to avoid unfair or biased decisions. Embedding these considerations into system design promotes responsible and trustworthy analytics.
 
